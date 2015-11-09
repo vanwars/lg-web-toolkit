@@ -5,6 +5,7 @@ define(["jquery", "marionette", "mapbox-lib"],
             id: 'map',
             map: null,
             initialized: false,
+            markerRoute: null,
             layer: null,
             initialize: function (opts) {
                 // optional dataset:
@@ -68,8 +69,9 @@ define(["jquery", "marionette", "mapbox-lib"],
                 });
             },
             markerClick: function (e) {
+                
                 var id = e.layer.feature.properties.id,
-                    route = "#/item/" + id,
+                    route = "#/" + this.clickRoute + "/" + id,
                     latLng = e.layer.getLatLng();
 
                 // load route:

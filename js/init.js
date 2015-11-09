@@ -58,6 +58,22 @@ define(["underscore",
                     alert(page.type + " view must have dataset defined in the config file");
                     return;
                 }
+                var dataset = this.getDataset(page);
+                _.extend(page, dataset);
+            },
+
+            attachModelFromDataset: function (page) {
+                if (!page.dataset) {
+                    alert(page.type + " view must have dataset defined in the config file");
+                    return;
+                }
+                var dataset = this.getDataset(page);
+                page.model = dataset.collection.get(page.modelID);
+                if (!page.model) { page.model = new Model({ id: page.modelID }); }
+                page.model.urlRoot = dataset.api_endpoint;
+            },
+
+            getDataset: function (page) {
                 var dataset = this.datasets[page.dataset];
                 if (!dataset.collection) {
                     dataset.collection = new Collection({
@@ -67,18 +83,7 @@ define(["underscore",
                         filter: dataset.filter
                     });
                 }
-                _.extend(page, dataset);
-            },
-
-            attachModelFromDataset: function (page) {
-                if (!page.dataset) {
-                    alert(page.type + " view must have dataset defined in the config file");
-                    return;
-                }
-                var dataset = this.datasets[page.dataset];
-                page.model = dataset.collection.get(page.modelID);
-                if (!page.model) { page.model = new Model({ id: page.modelID }); }
-                page.model.urlRoot = dataset.api_endpoint;
+                return dataset;
             },
 
             buildRoutes: function (pages) {
@@ -96,34 +101,36 @@ define(["underscore",
                     // with a list of pages:
                     that.routes[page.url] = function (arg1, arg2, arg3) {
                         _.each(that.routePageMap[page.url], function (p) {
-                            if (p.type == "detail") {
-                                try {
-                                    p.modelID = parseInt(arg1, 10);
-                                } catch (e) {
-                                    console.log("Error: " + e);
-                                }
-                            }
-                            that.loadView(p, arg1, arg2, arg3);
+                            p.args = [arg1, arg2, arg3];
+                            that.loadView(p);
                             that.executeTransition(p);
                         });
                     };
                 });
             },
 
-            loadView: function (page, arg1, arg2, arg3) {
-                page.args = [arg1, arg2, arg3];
+            loadView: function (page) {
+                this.processRouteArguments(page);
                 // Caches the view by attaching the view object to the page.
                 // Not yet sure if this is a good idea:
                 if (!page.view || page.type == "detail") {
                     var View = this.getView(page);
                     page.view = new View(page);
                 }
-                if (page.region) {
-                    page.region = page.region.replace(":id", arg1);
-                }
-                //page.view.$el.hide();
                 $(page.region || this.defaultRegion).html(page.view.el);
                 page.view.delegateEvents();
+            },
+
+            processRouteArguments: function (page) {
+                if (!page.url) { return; }
+                var re = /:(\w+)/g,
+                    results,
+                    names = [];
+                while ((results = re.exec(page.url)) !== null) {
+                    names.push(results[1]);
+                }
+                page.params = _.object(names, page.args);
+                page.modelID = page.params.id;
             },
 
             applyRoutingHacks: function () {

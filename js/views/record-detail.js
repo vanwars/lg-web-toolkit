@@ -9,6 +9,7 @@ define(["underscore", "marionette", "views/view-mixin"],
             initialize: function (opts) {
                 var that = this;
                 _.extend(this, opts);
+                _.extend(this.extras, opts.params);
                 if (this.model.isFetched) {
                     //used cached model:
                     _.extend(that.extras, that.model.toJSON());

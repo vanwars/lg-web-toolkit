@@ -10,7 +10,7 @@ define(["jquery",
          */
         //Todo: can this be a Marionette CollectionManager, since it's managing Layer models?
         var RecordList = Marionette.CompositeView.extend({
-
+            extras: {},
             events: {
                 'click .page': 'newPage'
             },
@@ -18,9 +18,9 @@ define(["jquery",
             childViewContainer: '.data-container',
 
             initialize: function (opts) {
+                _.extend(this.extras, opts.params);
                 this.collection = opts.collection;
                 this.listenTo(this.collection, 'reset', this.renderWithHelpers);
-                //this.listenTo(this.collection, 'change', this.renderWithHelpers);
                 this.loadTemplates(opts);
             },
 
@@ -34,10 +34,12 @@ define(["jquery",
 
                     function (Handlebars, CollectionTemplatePath, ItemTemplatePath) {
                         that.childView = Marionette.ItemView.extend({
-                            /*modelEvents: {
-                                "change": "render"
-                            },*/
-                            template: Handlebars.compile(ItemTemplatePath)
+                            template: Handlebars.compile(ItemTemplatePath),
+                            serializeData: function () {
+                                var data = Marionette.ItemView.prototype.serializeData.apply(this, arguments);
+                                _.extend(data, that.extras);
+                                return data;
+                            }
                         });
                         that.template = Handlebars.compile(CollectionTemplatePath);
                         that.collection.fetch({reset: true});
@@ -50,6 +52,7 @@ define(["jquery",
                     previous: this.collection.previous,
                     count: this.collection.count
                 };
+                _.extend(this.templateHelpers, this.extras);
                 this.collection.sort();
                 this.render();
             },
