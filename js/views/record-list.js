@@ -53,7 +53,8 @@ define(["jquery",
                     count: this.collection.count
                 };
                 _.extend(this.templateHelpers, this.extras);
-                this.collection.sort();
+                //this.collection.sort();
+                this.collection = this.collection.applyFilter();
                 this.render();
             },
 

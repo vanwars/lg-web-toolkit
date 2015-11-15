@@ -80,7 +80,7 @@ define(["underscore",
                         api_endpoint: dataset.api_endpoint,
                         page_size: dataset.page_size || 10,
                         comparator: dataset.ordering_field || "id",
-                        filter: dataset.filter
+                        filter_text: dataset.filter_text
                     });
                 }
                 return dataset;

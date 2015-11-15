@@ -21,8 +21,8 @@ define(["underscore", "backbone"],
                 //console.log(opts);
                 _.extend(this, opts);
                 this.url = this.api_endpoint + '?page_size=' + this.page_size;
-                if (this.filter) {
-                    this.url += "&query=" + this.filter;
+                if (this.filter_text) {
+                    this.url += "&query=" + this.filter_text;
                 }
             },
             parse: function (response) {
@@ -31,6 +31,15 @@ define(["underscore", "backbone"],
                 this.previous = response.previous;
                 //console.log(this.next, this.previous, this.count);
                 return response.results;
+            },
+
+            applyFilter: function () {
+                //console.log("apply Filter");
+                var filtered = this.filter(function (model) {
+                    //console.log(model);
+                    return model.get("tags").toLowerCase().indexOf("oak") != -1;
+                });
+                return new Base(filtered);
             }
 
         });
