@@ -28,6 +28,7 @@ define(["underscore",
                         v;
                     if (!page.url && page.url != "") {
                         v = new View(page);
+                        page.view = v;
                         $(page.region || that.defaultRegion).html(v.el);
                         v.delegateEvents();
                     }
@@ -80,7 +81,7 @@ define(["underscore",
                         api_endpoint: dataset.api_endpoint,
                         page_size: dataset.page_size || 10,
                         comparator: dataset.ordering_field || "id",
-                        filter_text: dataset.filter_text
+                        server_query: dataset.server_query
                     });
                 }
                 return dataset;
@@ -111,9 +112,12 @@ define(["underscore",
 
             loadView: function (page) {
                 this.processRouteArguments(page);
-                // Caches the view by attaching the view object to the page.
-                // Not yet sure if this is a good idea:
-                if (!page.view || page.type == "detail") {
+                // Caches the view if there are no dynamic route parameters:
+                if (!page.view || !_.isEmpty(page.params)) {
+                    // clean up imperative or events get called multiple times:
+                    if (page.view) {
+                        page.view.destroy();
+                    }
                     var View = this.getView(page);
                     page.view = new View(page);
                 }

@@ -1,5 +1,5 @@
-define(["underscore", "backbone"],
-    function (_, Backbone) {
+define(["underscore", "backbone", "lib/sqlParser"],
+    function (_, Backbone, SqlParser) {
         "use strict";
         /**
          * An "abstract" Backbone Collection; the root of all of the other
@@ -18,11 +18,10 @@ define(["underscore", "backbone"],
                 isVisible: true
             },
             initialize: function (opts) {
-                //console.log(opts);
                 _.extend(this, opts);
                 this.url = this.api_endpoint + '?page_size=' + this.page_size;
-                if (this.filter_text) {
-                    this.url += "&query=" + this.filter_text;
+                if (this.server_query) {
+                    this.url += "&query=" + this.server_query;
                 }
             },
             parse: function (response) {
@@ -33,13 +32,16 @@ define(["underscore", "backbone"],
                 return response.results;
             },
 
-            applyFilter: function () {
-                //console.log("apply Filter");
-                var filtered = this.filter(function (model) {
-                    //console.log(model);
-                    return model.get("tags").toLowerCase().indexOf("oak") != -1;
+            applyFilter: function (sql) {
+                var sqlParser = new SqlParser(sql);
+                this.each(function (model) {
+                    if (sqlParser.checkModel(model)) {
+                        model.set("hidden", false);
+                    } else {
+                        model.set("hidden", true);
+                    }
                 });
-                return new Base(filtered);
+                this.trigger('filter-applied');
             }
 
         });

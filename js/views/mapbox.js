@@ -8,13 +8,23 @@ define(["jquery", "marionette", "mapbox-lib"],
             markerRoute: null,
             layer: null,
             initialize: function (opts) {
+                this.undelegateEvents();
                 // optional dataset:
                 if (opts.collection) {
                     this.collection = opts.collection;
-                    this.collection.fetch({ reset: true });
-                    this.listenTo(this.collection, 'reset', this.renderMarkers);
+                    //this.collection.fetch({ reset: true });
+                    this.listenTo(this.collection, 'reset', this.collectionReset);
+                    this.listenTo(this.collection, 'filter-applied', this.filterApplied);
                 }
                 this.initMap();
+            },
+            collectionReset: function () {
+                console.log("collection reset");
+                this.renderMarkers();
+            },
+            filterApplied: function () {
+                console.log("filter applied");
+                this.renderMarkers();
             },
             initMap: function () {
                 //initialize the map:
@@ -30,30 +40,39 @@ define(["jquery", "marionette", "mapbox-lib"],
                 new L.Control.Zoom({ position: 'topright' }).addTo(this.map);
                 this.initialized = true;
             },
+            centerMap: function () {
+                alert("hi");
+            },
             renderMarkers: function () {
-                if (this.layer != null) { return; }
+                if (this.layer != null) { 
+                    this.map.removeLayer(this.layer);
+                }
+                console.log('creating new layer...');
                 this.layer = L.mapbox.featureLayer().addTo(this.map);
                 var places = {
                         type: 'FeatureCollection',
                         features: []
                     },
                     that = this;
-                this.collection.each(function (marker) {
+                this.collection.each(function (model) {
+                    if (model.get("hidden")) {
+                        return;
+                    }
                     var properties = {
-                        id: marker.get("id"),
-                        name: marker.get("name")
+                        id: model.get("id"),
+                        name: model.get("name")
                     };
 
                     //add icon:
                     _.extend(properties, {
-                        "marker-color": marker.get("color"),
+                        "marker-color": model.get("color"),
                         "marker-symbol": that.markerSymbol || "",
                         "marker-size": "large"
                     });
 
                     //console.log(properties);
                     places.features.push({
-                        geometry: marker.get("geometry"),
+                        geometry: model.get("geometry"),
                         properties: properties,
                         type: "Feature"
                     });
@@ -69,16 +88,23 @@ define(["jquery", "marionette", "mapbox-lib"],
                 });
             },
             markerClick: function (e) {
-                
                 var id = e.layer.feature.properties.id,
-                    route = "#/" + this.clickRoute + "/" + id,
                     latLng = e.layer.getLatLng();
-
-                // load route:
-                window.location.hash = route;
 
                 // pan map:
                 this.map.setView([latLng.lat, latLng.lng], this.map.getZoom());
+
+                // load route:
+                if (this.clickRoute) {
+                    window.location.hash = "#/" + this.clickRoute + "/" + id;
+                }
+
+            },
+
+            onDestroy: function () {
+                this.undelegateEvents();
+                $(this.el).empty();
+                console.log("destroyed");
             }
         });
         return MapboxView;

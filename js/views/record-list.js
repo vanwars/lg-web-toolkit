@@ -1,14 +1,8 @@
 define(["jquery",
-        "marionette",
-        "collection"
+        "marionette"
     ],
-    function ($, Marionette, Collection) {
+    function ($, Marionette) {
         'use strict';
-        /**
-         * Controls a dictionary of overlayGroups
-         * @class OverlayManager
-         */
-        //Todo: can this be a Marionette CollectionManager, since it's managing Layer models?
         var RecordList = Marionette.CompositeView.extend({
             extras: {},
             events: {
@@ -19,9 +13,26 @@ define(["jquery",
 
             initialize: function (opts) {
                 _.extend(this.extras, opts.params);
+                this.applyBindVariablesToQuery();
                 this.collection = opts.collection;
                 this.listenTo(this.collection, 'reset', this.renderWithHelpers);
                 this.loadTemplates(opts);
+            },
+
+            applyBindVariablesToQuery: function () {
+                var that = this;
+                _.each(this.params, function (val, key) {
+                    that.client_query = that.client_query.replace(":" + key, val);
+                });
+            },
+
+            // overriding the "addChild" method so that only data elements
+            // that are visible render:
+            addChild: function (child, ChildView, index) {
+                if (!child.get('hidden')) {
+                    return Marionette.CollectionView.prototype.addChild.call(this, child, ChildView, index);
+                }
+                return null;
             },
 
             loadTemplates: function (opts) {
@@ -47,14 +58,16 @@ define(["jquery",
             },
 
             renderWithHelpers: function () {
+                if (this.client_query) {
+                    this.collection.applyFilter(this.client_query);
+                }
                 this.templateHelpers = {
                     next: this.collection.next,
                     previous: this.collection.previous,
                     count: this.collection.count
                 };
                 _.extend(this.templateHelpers, this.extras);
-                //this.collection.sort();
-                this.collection = this.collection.applyFilter();
+                this.collection.sort();
                 this.render();
             },
 
@@ -68,6 +81,12 @@ define(["jquery",
                     }
                 });
                 e.preventDefault();
+            },
+
+            onDestroy: function () {
+                this.undelegateEvents();
+                $(this.el).empty();
+                console.log("destroyed");
             }
 
         });
