@@ -8,11 +8,19 @@ define(["jquery", "marionette", "mapbox-lib"],
             markerRoute: null,
             layer: null,
             initialize: function (opts) {
-                this.undelegateEvents();
                 // optional dataset:
+                var that = this;
                 if (opts.collection) {
                     this.collection = opts.collection;
-                    //this.collection.fetch({ reset: true });
+                    // Only fetch from server if a server query hasn't yet been issued:
+                    if (!this.collection.fetched) {
+                        this.collection.fetch({
+                            reset: true,
+                            success: function () { that.collection.fetched = true; }
+                        });
+                    } else {
+                        that.collectionReset();
+                    }
                     this.listenTo(this.collection, 'reset', this.collectionReset);
                     this.listenTo(this.collection, 'filter-applied', this.filterApplied);
                 }
@@ -83,6 +91,7 @@ define(["jquery", "marionette", "mapbox-lib"],
                     }
                 });
                 this.layer.setGeoJSON(places);
+                //this.map.fitBounds(this.layer.getBounds());
                 this.layer.on('click', function (e) {
                     that.markerClick(e);
                 });
@@ -99,6 +108,10 @@ define(["jquery", "marionette", "mapbox-lib"],
                     window.location.hash = "#/" + this.clickRoute + "/" + id;
                 }
 
+            },
+
+            fitMapToLayer: function () {
+                this.map.fitBounds(this.layer.getBounds());
             },
 
             onDestroy: function () {

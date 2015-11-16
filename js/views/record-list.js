@@ -53,7 +53,14 @@ define(["jquery",
                             }
                         });
                         that.template = Handlebars.compile(CollectionTemplatePath);
-                        that.collection.fetch({reset: true});
+                        // Only fetch from server if a server query hasn't yet been issued:
+                        if (!that.collection.fetched) {
+                            that.collection.fetch({reset: true, success: function () {
+                                that.collection.fetched = true;
+                            }});
+                        } else {
+                            that.renderWithHelpers();
+                        }
                     });
             },
 

@@ -23,7 +23,7 @@ define(["underscore",
             buildViews: function (pages) {
                 var that = this;
                 /* Dynamically builds Backbone Views from the config file */
-                _.each(pages, function (page) {
+                _.each(pages, function (page, key) {
                     var View = that.getView(page),
                         v;
                     if (!page.url && page.url != "") {
@@ -90,7 +90,7 @@ define(["underscore",
             buildRoutes: function (pages) {
                 var that = this;
                 /* Dynamically builds Backbone Routes from the config file */
-                _.each(pages, function (page) {
+                _.each(pages, function (page, key) {
                     page.vent = that.vent;
                     if (!that.routePageMap[page.url]) {
                         that.routePageMap[page.url] = [];
