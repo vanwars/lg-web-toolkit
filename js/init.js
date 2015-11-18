@@ -24,9 +24,12 @@ define(["underscore",
                 var that = this;
                 /* Dynamically builds Backbone Views from the config file */
                 _.each(pages, function (page, key) {
+                    if (page.url || page.url == "") {
+                        page.urls = [page.url];
+                    }
                     var View = that.getView(page),
                         v;
-                    if (!page.url && page.url != "") {
+                    if (!page.urls) {
                         v = new View(page);
                         page.view = v;
                         $(page.region || that.defaultRegion).html(v.el);
@@ -91,23 +94,27 @@ define(["underscore",
                 var that = this;
                 /* Dynamically builds Backbone Routes from the config file */
                 _.each(pages, function (page, key) {
-                    page.vent = that.vent;
-                    if (!that.routePageMap[page.url]) {
-                        that.routePageMap[page.url] = [];
-                    }
-                    that.routePageMap[page.url].push(page);
-
-                    // Note: more than one page can be loaded per route.
-                    // Uses the "routePageMap," which associates each route
-                    // with a list of pages:
-                    that.routes[page.url] = function (arg1, arg2, arg3) {
-                        console.log("CURRENT ROUTE: ", page.url, page);
-                        _.each(that.routePageMap[page.url], function (p) {
-                            p.args = [arg1, arg2, arg3];
-                            that.loadView(p);
-                            that.executeTransition(p);
-                        });
-                    };
+                    _.each(page.urls, function (url) {
+                        console.log(url);
+                        page.vent = that.vent;
+                        if (!that.routePageMap[url]) {
+                            that.routePageMap[url] = [];
+                        }
+                        that.routePageMap[url].push(page);
+    
+                        // Note: more than one page can be loaded per route.
+                        // Uses the "routePageMap," which associates each route
+                        // with a list of pages:
+                        that.routes[url] = function (arg1, arg2, arg3) {
+                            console.log("CURRENT ROUTE: ", url, page);
+                            _.each(that.routePageMap[url], function (p) {
+                                p.currentURL = url;
+                                p.args = [arg1, arg2, arg3];
+                                that.loadView(p);
+                                that.executeTransition(p);
+                            });
+                        };
+                    });
                 });
             },
 
@@ -132,11 +139,11 @@ define(["underscore",
             },
 
             processRouteArguments: function (page) {
-                if (!page.url) { return; }
+                if (!page.currentURL) { return; }
                 var re = /:(\w+)/g,
                     results,
                     names = [];
-                while ((results = re.exec(page.url)) !== null) {
+                while ((results = re.exec(page.currentURL)) !== null) {
                     names.push(results[1]);
                 }
                 page.params = _.object(names, page.args);
