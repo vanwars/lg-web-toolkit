@@ -101,6 +101,7 @@ define(["underscore",
                     // Uses the "routePageMap," which associates each route
                     // with a list of pages:
                     that.routes[page.url] = function (arg1, arg2, arg3) {
+                        console.log("CURRENT ROUTE: ", page.url, page);
                         _.each(that.routePageMap[page.url], function (p) {
                             p.args = [arg1, arg2, arg3];
                             that.loadView(p);
@@ -120,8 +121,13 @@ define(["underscore",
                     }
                     var View = this.getView(page);
                     page.view = new View(page);
+                    $(page.region || this.defaultRegion).html(page.view.el);
+                } else {
+                    $(page.region || this.defaultRegion).html(page.view.el);
+                    if (page.postRender) {
+                        page.postRender(this);
+                    }
                 }
-                $(page.region || this.defaultRegion).html(page.view.el);
                 page.view.delegateEvents();
             },
 
@@ -147,7 +153,7 @@ define(["underscore",
 
             executeTransition: function (page) {
                 if (page.transition) {
-                    eval(page.transition + "(page)");
+                    page.transition();
                 }
             }
         });

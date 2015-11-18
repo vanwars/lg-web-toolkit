@@ -42,6 +42,14 @@ define(["underscore", "backbone", "lib/sqlParser"],
                     }
                 });
                 this.trigger('filter-applied');
+            },
+
+            clearFilter: function () {
+                console.log("clearFilter");
+                this.each(function (model) {
+                    model.set("hidden", false);
+                });
+                this.trigger('filter-applied');
             }
 
         });

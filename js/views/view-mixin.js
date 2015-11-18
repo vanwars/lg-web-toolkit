@@ -12,16 +12,16 @@ define([], function () {
                         that.template = Handlebars.compile(Path);
                         that.$el.html(that.template(that.extras));
                         if (that.postRender) {
-                            eval(that.postRender + "(that)");
+                            that.postRender(that);
                         }
                     }
                 );
             } else {
                 //console.log("Template loading from memory");
                 this.$el.html(this.template(this.extras));
-            }
-            if (this.postRender) {
-                eval(this.postRender + "(this)");
+                if (this.postRender) {
+                    this.postRender(this);
+                }
             }
             return this.$el;
         },

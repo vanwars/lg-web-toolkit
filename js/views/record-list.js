@@ -67,6 +67,8 @@ define(["jquery",
             renderWithHelpers: function () {
                 if (this.client_query) {
                     this.collection.applyFilter(this.client_query);
+                } else {
+                    this.collection.clearFilter();
                 }
                 this.templateHelpers = {
                     next: this.collection.next,

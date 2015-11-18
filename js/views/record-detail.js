@@ -24,9 +24,6 @@ define(["underscore", "marionette", "views/view-mixin"],
                         that.render();
                     }
                 });
-                if (this.onLoad) {
-                    this.onLoad();
-                }
             }
         });
         _.extend(RecordView.prototype, ViewMixin);
