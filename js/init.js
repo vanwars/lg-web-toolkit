@@ -8,6 +8,7 @@ define(["underscore",
         "views/mapbox",
         "collection",
         "model",
+        "jquery.bootstrap",
         "functions"
     ],
     function (_, $, Backbone, Marionette, BaseView, RecordListView, RecordDetailView, MapboxView, Collection, Model) {

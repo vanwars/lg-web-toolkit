@@ -3,12 +3,12 @@ require.config({
     paths: {
         'backbone': 'external/backbone-min',
         'handlebars': 'external/handlebars.min',
-        'jquery': '//code.jquery.com/jquery-1.8.0.min',
-        'jquery.bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min',
+        'jquery': '//code.jquery.com/jquery-2.1.4',
+        'jquery.bootstrap': '//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min',
         'text': 'external/text',
         'marionette': 'external/backbone.marionette',
         'underscore': 'external/underscore-min',
-        'mapbox-lib': '//api.mapbox.com/mapbox.js/v2.2.3/mapbox'
+        'mapbox-lib': 'http://api.mapbox.com/mapbox.js/v2.2.3/mapbox'
     },
     shim: {
         'underscore': {
