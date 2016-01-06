@@ -96,7 +96,7 @@ define(["underscore",
                 /* Dynamically builds Backbone Routes from the config file */
                 _.each(pages, function (page, key) {
                     _.each(page.urls, function (url) {
-                        console.log(url);
+                        //console.log(url);
                         page.vent = that.vent;
                         if (!that.routePageMap[url]) {
                             that.routePageMap[url] = [];
@@ -107,7 +107,7 @@ define(["underscore",
                         // Uses the "routePageMap," which associates each route
                         // with a list of pages:
                         that.routes[url] = function (arg1, arg2, arg3) {
-                            console.log("CURRENT ROUTE: ", url, page);
+                            //console.log("CURRENT ROUTE: ", url, page);
                             _.each(that.routePageMap[url], function (p) {
                                 p.currentURL = url;
                                 p.args = [arg1, arg2, arg3];

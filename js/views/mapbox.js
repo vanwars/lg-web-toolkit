@@ -27,11 +27,9 @@ define(["jquery", "marionette", "mapbox-lib"],
                 this.initMap();
             },
             collectionReset: function () {
-                console.log("collection reset");
                 this.renderMarkers();
             },
             filterApplied: function () {
-                console.log("filter applied");
                 this.renderMarkers();
             },
             initMap: function () {
@@ -55,7 +53,6 @@ define(["jquery", "marionette", "mapbox-lib"],
                 if (this.layer != null) { 
                     this.map.removeLayer(this.layer);
                 }
-                console.log('creating new layer...');
                 this.layer = L.mapbox.featureLayer().addTo(this.map);
                 var places = {
                         type: 'FeatureCollection',
@@ -95,6 +92,9 @@ define(["jquery", "marionette", "mapbox-lib"],
                 this.layer.on('click', function (e) {
                     that.markerClick(e);
                 });
+                if (this.postRender) {
+                    this.postRender(this);
+                }
             },
             markerClick: function (e) {
                 var id = e.layer.feature.properties.id,
@@ -117,7 +117,6 @@ define(["jquery", "marionette", "mapbox-lib"],
             onDestroy: function () {
                 this.undelegateEvents();
                 $(this.el).empty();
-                console.log("destroyed");
             }
         });
         return MapboxView;

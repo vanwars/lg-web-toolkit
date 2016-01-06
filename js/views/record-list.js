@@ -95,7 +95,7 @@ define(["jquery",
             onDestroy: function () {
                 this.undelegateEvents();
                 $(this.el).empty();
-                console.log("destroyed");
+                //console.log("destroyed");
             }
 
         });

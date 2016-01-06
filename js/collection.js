@@ -45,7 +45,7 @@ define(["underscore", "backbone", "lib/sqlParser"],
             },
 
             clearFilter: function () {
-                console.log("clearFilter");
+                //console.log("clearFilter");
                 this.each(function (model) {
                     model.set("hidden", false);
                 });
