@@ -53,6 +53,8 @@ define(["underscore",
                         this.attachDataset(page);
                     }
                     return MapboxView.extend(page);
+                case "basic":
+                    return BaseView.extend(page);
                 default:
                     return BaseView.extend(page);
                 }
