@@ -3,6 +3,7 @@ define([], function () {
     var ViewMixin = {
         extras: {},
         render: function () {
+            alert( this.opts.urlPath);
             var that = this;
             if (!this.template) {
                 require(
