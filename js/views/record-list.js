@@ -12,6 +12,7 @@ define(["jquery",
             childViewContainer: '.data-container',
 
             initialize: function (opts) {
+                this.opts = opts;
                 _.extend(this.extras, opts.params);
                 this.applyBindVariablesToQuery();
                 this.collection = opts.collection;
@@ -37,11 +38,11 @@ define(["jquery",
 
             loadTemplates: function (opts) {
                 var that = this;
-                alert(urlPath);
+                alert(this.opts.urlPath);
                 require([
                     "handlebars",
-                    "text!" + opts.urlPath + "/templates/" + opts.collection_template_path,
-                    "text!" + opts.urlPath + "/templates/" + opts.item_template_path,
+                    "text!" + this.opts.urlPath + "/templates/" + opts.collection_template_path,
+                    "text!" + this.opts.urlPath + "/templates/" + opts.item_template_path,
                     "handlebars-helpers"],
 
                     function (Handlebars, CollectionTemplatePath, ItemTemplatePath) {

@@ -9,6 +9,7 @@ define(["jquery", "marionette", "mapbox-lib"],
             layer: null,
             initialize: function (opts) {
                 // optional dataset:
+                this.opts = opts;
                 var that = this;
                 if (opts.collection) {
                     this.collection = opts.collection;
