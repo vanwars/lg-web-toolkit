@@ -28,12 +28,12 @@ define(["underscore",
                     if (page.url || page.url == "") {
                         page.urls = [page.url];
                     }
+                    page.urlPath = that.urlPath;
                     var View = that.getView(page),
                         v;
                     if (!page.urls) {
                         v = new View(page);
                         page.view = v;
-                        page.urlPath = that.urlPath;
                         $(page.region || that.defaultRegion).html(v.el);
                         v.delegateEvents();
                     }
