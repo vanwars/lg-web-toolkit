@@ -37,10 +37,11 @@ define(["jquery",
 
             loadTemplates: function (opts) {
                 var that = this;
+                alert(urlPath);
                 require([
                     "handlebars",
-                    "text!../templates/" + opts.collection_template_path,
-                    "text!../templates/" + opts.item_template_path,
+                    "text!" + opts.urlPath + "/templates/" + opts.collection_template_path,
+                    "text!" + opts.urlPath + "/templates/" + opts.item_template_path,
                     "handlebars-helpers"],
 
                     function (Handlebars, CollectionTemplatePath, ItemTemplatePath) {

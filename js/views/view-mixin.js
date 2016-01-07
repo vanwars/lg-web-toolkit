@@ -6,7 +6,7 @@ define([], function () {
             var that = this;
             if (!this.template) {
                 require(
-                    ["handlebars", "text!../templates/" + this.template_path, "handlebars-helpers"],
+                    ["handlebars", "text!" + this.urlPath + "/templates/" + this.template_path, "handlebars-helpers"],
                     function (Handlebars, Path) {
                         //console.log("Template is loading asynchronously");
                         that.template = Handlebars.compile(Path);

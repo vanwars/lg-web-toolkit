@@ -33,6 +33,7 @@ define(["underscore",
                     if (!page.urls) {
                         v = new View(page);
                         page.view = v;
+                        page.urlPath = that.urlPath;
                         $(page.region || that.defaultRegion).html(v.el);
                         v.delegateEvents();
                     }
@@ -169,6 +170,7 @@ define(["underscore",
         });
 
         App.addInitializer(function (opts) {
+            this.urlPath = opts.urlPath;
             this.datasets = opts.datasets;
             this.buildViews(opts.pages);
             this.buildRoutes(opts.pages);
