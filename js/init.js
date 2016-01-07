@@ -28,7 +28,6 @@ define(["underscore",
                     if (page.url || page.url == "") {
                         page.urls = [page.url];
                     }
-                    page.urlPath = that.urlPath;
                     var View = that.getView(page),
                         v;
                     if (!page.urls) {
@@ -170,7 +169,6 @@ define(["underscore",
         });
 
         App.addInitializer(function (opts) {
-            this.urlPath = opts.urlPath;
             this.datasets = opts.datasets;
             this.buildViews(opts.pages);
             this.buildRoutes(opts.pages);

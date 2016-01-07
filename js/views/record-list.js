@@ -38,11 +38,10 @@ define(["jquery",
 
             loadTemplates: function (opts) {
                 var that = this;
-                alert(this.opts.urlPath);
                 require([
                     "handlebars",
-                    "text!" + this.opts.urlPath + "/templates/" + opts.collection_template_path,
-                    "text!" + this.opts.urlPath + "/templates/" + opts.item_template_path,
+                    "text!" + window.location.toString() + "/templates/" + opts.collection_template_path,
+                    "text!" + window.location.toString() + "/templates/" + opts.item_template_path,
                     "handlebars-helpers"],
 
                     function (Handlebars, CollectionTemplatePath, ItemTemplatePath) {
