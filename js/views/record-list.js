@@ -39,7 +39,6 @@ define(["jquery",
             loadTemplates: function (opts) {
                 var that = this,
                     template_path = window.location.toString().split("#")[0];
-                alert(template_path);
                 require([
                     "handlebars",
                     "text!" + template_path + "/templates/" + opts.collection_template_path,
