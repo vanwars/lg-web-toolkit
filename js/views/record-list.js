@@ -37,12 +37,13 @@ define(["jquery",
             },
 
             loadTemplates: function (opts) {
-                var that = this;
-                alert(window.location.toString());
+                var that = this,
+                    template_path = window.location.toString().split("#")[0];
+                alert(template_path);
                 require([
                     "handlebars",
-                    "text!" + window.location.toString() + "/templates/" + opts.collection_template_path,
-                    "text!" + window.location.toString() + "/templates/" + opts.item_template_path,
+                    "text!" + template_path + "/templates/" + opts.collection_template_path,
+                    "text!" + template_path + "/templates/" + opts.item_template_path,
                     "handlebars-helpers"],
 
                     function (Handlebars, CollectionTemplatePath, ItemTemplatePath) {

@@ -3,10 +3,11 @@ define([], function () {
     var ViewMixin = {
         extras: {},
         render: function () {
-            var that = this;
+            var that = this,
+                template_path = window.location.toString().split("#")[0];
             if (!this.template) {
                 require(
-                    ["handlebars", "text!" + window.location.toString() + "/templates/" + this.template_path, "handlebars-helpers"],
+                    ["handlebars", "text!" + template_path + "/templates/" + this.template_path, "handlebars-helpers"],
                     function (Handlebars, Path) {
                         //console.log("Template is loading asynchronously");
                         that.template = Handlebars.compile(Path);
