@@ -42,8 +42,8 @@ define(["jquery", "marionette", "mapbox-lib"],
                 L.mapbox.accessToken = this.accessToken;
                 this.map = L.mapbox.map('map', this.styleID, {
                     zoomControl: false
-                }).setView([37.812, -122.294], 13);
-                this.map.scrollWheelZoom.disable();
+                }).setView(this.opts.center, this.opts.zoom);
+                //this.map.scrollWheelZoom.disable();
                 new L.Control.Zoom({ position: 'topright' }).addTo(this.map);
                 this.initialized = true;
             },
@@ -102,7 +102,7 @@ define(["jquery", "marionette", "mapbox-lib"],
                     latLng = e.layer.getLatLng();
 
                 // pan map:
-                this.map.setView([latLng.lat, latLng.lng], this.map.getZoom());
+                //this.map.setView([latLng.lat, latLng.lng], this.map.getZoom());
 
                 // load route:
                 if (this.clickRoute) {
