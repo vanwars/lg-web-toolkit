@@ -1,8 +1,11 @@
-define(["underscore", "marionette", "views/view-mixin"],
-    function (_, Marionette, ViewMixin) {
+define(["jquery", "underscore", "marionette", "views/view-mixin"],
+    function ($, _, Marionette, ViewMixin) {
         "use strict";
         var RecordView = Marionette.ItemView.extend({
             model: null,
+            events: {
+                'click .zoom': 'zoomToMarker'
+            },
             modelEvents: {
                 'change': 'render'
             },
@@ -11,7 +14,7 @@ define(["underscore", "marionette", "views/view-mixin"],
                 this.opts = opts;
                 _.extend(this, opts);
                 _.extend(this.extras, opts.params);
-                
+
                 // hack for Safari (json format is not automatically selected):
                 this.model.url = function () {
                     return that.model.urlRoot + '?format=json';
@@ -30,6 +33,14 @@ define(["underscore", "marionette", "views/view-mixin"],
                         that.render();
                     }
                 });
+            },
+            zoomToMarker: function (e) {
+                var zoom = $(e.target).attr("zoom-level");
+                if (!zoom) {
+                    alert("Please give your zoom a \"zoom-level\" attribute.");
+                }
+                this.model.trigger('zoom-to-marker', zoom);
+                e.preventDefault();
             }
         });
         _.extend(RecordView.prototype, ViewMixin);
