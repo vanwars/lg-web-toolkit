@@ -58,8 +58,9 @@ define(["jquery", "marionette", "mapbox-lib", "views/marker"],
                     itemView = new MarkerView({
                         map: that.map,
                         model: model,
+                        color: that.options.markerColor,
                         token: that.accessToken,
-                        clickRoute: that.clickRoute
+                        markerURL: that.markerURL
                     });
                     that.layer.addLayer(itemView.marker);
                 });

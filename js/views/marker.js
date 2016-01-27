@@ -9,7 +9,9 @@ define(["marionette", "underscore", "mapbox-lib"], function (Marionette, _, L) {
         },
         initialize: function (opts) {
             _.extend(this, opts);
-            this.model.set("color", "eb6627");
+            if (this.color) {
+                this.model.set("color", this.color);
+            }
             this.icon = L.icon({
                 iconUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + "@2x.png?access_token=" + this.token,
                 iconRetinaUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + ".png?access_token=" + this.token,
@@ -42,9 +44,10 @@ define(["marionette", "underscore", "mapbox-lib"], function (Marionette, _, L) {
         },
 
         markerClick: function (e) {
-            var id = e.target.options.id;
-            if (this.clickRoute) {
-                window.location.hash = "#/" + this.clickRoute + "/" + id;
+            var id = e.target.options.id,
+                url = this.markerURL.replace(":id", id);
+            if (this.markerURL) {
+                window.location.hash = "#/" + url;
             }
             //this.marker.setIcon(this.highlightIcon);
         },
