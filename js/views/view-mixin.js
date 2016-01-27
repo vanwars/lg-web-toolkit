@@ -3,6 +3,9 @@ define([], function () {
     var ViewMixin = {
         extras: {},
         render: function () {
+            if (!this.template_path) {
+                return this.$el;
+            }
             var that = this,
                 template_path = window.location.toString().split("#")[0];
             if (!this.template) {

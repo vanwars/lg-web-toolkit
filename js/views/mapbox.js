@@ -111,6 +111,16 @@ define(["jquery", "marionette", "mapbox-lib"],
 
             },
 
+            zoomTo: function (coords, zoom) {
+                /*var that = this;
+                this.map.panTo(coords, {animate: true, duration: 1.0});
+                setTimeout(function () {
+                    that.map.setZoom(zoom, { animate: true });
+                }, 1000);
+                */
+                this.map.setView(coords, zoom, { animation: true });
+            },
+
             fitMapToLayer: function () {
                 this.map.fitBounds(this.layer.getBounds());
             },
