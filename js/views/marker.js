@@ -9,20 +9,21 @@ define(["marionette", "underscore", "mapbox-lib"], function (Marionette, _, L) {
         },
         initialize: function (opts) {
             _.extend(this, opts);
+            var factor = 1.5;
             if (this.color) {
                 this.model.set("color", this.color);
             }
             this.icon = L.icon({
-                iconUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + "@2x.png?access_token=" + this.token,
-                iconRetinaUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + ".png?access_token=" + this.token,
-                iconSize: [30, 70],
-                iconAnchor: [15, 35]
+                iconUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + ".png?access_token=" + this.token,
+                iconRetinaUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + "@2x.png?access_token=" + this.token,
+                iconSize: [30 * factor, 70 * factor],
+                iconAnchor: [15 * factor, 35 * factor]
             });
             this.highlightIcon = L.icon({
-                iconUrl: this.markerUrl + "pin-m+999@2x.png?access_token=" + this.token,
-                iconRetinaUrl: this.markerUrl + "pin-m+999.png?access_token=" + this.token,
-                iconSize: [30, 70],
-                iconAnchor: [15, 35]
+                iconUrl: this.markerUrl + "pin-m+999.png?access_token=" + this.token,
+                iconRetinaUrl: this.markerUrl + "pin-m+999@2x.png?access_token=" + this.token,
+                iconSize: [30 * factor, 70 * factor],
+                iconAnchor: [15 * factor, 35 * factor]
             });
             this.marker = L.marker(this.getCoords(), this.getProperties());
             this.marker.on('click', this.markerClick.bind(this));
