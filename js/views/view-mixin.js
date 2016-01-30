@@ -27,6 +27,9 @@ define([], function () {
                     this.postRender(this);
                 }
             }
+            if (this.onRender) {
+                this.onRender();
+            }
             return this.$el;
         },
         validate: function () {

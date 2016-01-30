@@ -25,7 +25,27 @@ define(["jquery", "marionette", "mapbox-lib", "views/marker"],
                     this.listenTo(this.collection, 'reset', this.collectionReset);
                     this.listenTo(this.collection, 'filter-applied', this.filterApplied);
                 }
+                this.lastScrolled = 0;
+                this.scrollInterval = 1500;
+                $(window).on('DOMMouseScroll mousewheel', function (e) {
+                    that.handleScroll(e);
+                });
+
                 this.initMap();
+            },
+            handleScroll: function (e) {
+                e = window.event || e;
+                var wheelDelta = e.wheelDelta,
+                    detail = (e.originalEvent ? -e.originalEvent.detail : null),
+                    delta = Math.max(-1, Math.min(1, (wheelDelta || detail)));
+                if (($.now() - this.lastScrolled) > this.scrollInterval) {
+                    this.lastScrolled = $.now();
+                    if (delta < 0) {
+                        console.log("down", delta);
+                    } else {
+                        console.log("up", delta);
+                    }
+                }
             },
             collectionReset: function () {
                 this.renderMarkers();
@@ -44,7 +64,9 @@ define(["jquery", "marionette", "mapbox-lib", "views/marker"],
                     zoomControl: false
                 }).setView(this.opts.center, this.opts.zoom);
                 new L.Control.Zoom({ position: 'topright' }).addTo(this.map);
-                //this.map.scrollWheelZoom.disable();
+                if (this.options.disableZoomScroll) {
+                    this.map.scrollWheelZoom.disable();
+                }
                 this.initialized = true;
             },
             renderMarkers: function () {
@@ -58,9 +80,8 @@ define(["jquery", "marionette", "mapbox-lib", "views/marker"],
                     itemView = new MarkerView({
                         map: that.map,
                         model: model,
-                        color: that.options.markerColor,
                         token: that.accessToken,
-                        markerURL: that.markerURL
+                        markerOpts: that.options.marker
                     });
                     that.layer.addLayer(itemView.marker);
                 });

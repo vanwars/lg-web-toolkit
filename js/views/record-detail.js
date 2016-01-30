@@ -34,6 +34,10 @@ define(["jquery", "underscore", "marionette", "views/view-mixin"],
                     }
                 });
             },
+            onRender: function () {
+                //post-render functionality:
+                this.model.trigger('center-marker');
+            },
             zoomToMarker: function (e) {
                 var zoom = $(e.target).attr("zoom-level");
                 if (!zoom) {

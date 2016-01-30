@@ -3,25 +3,31 @@ define(["marionette", "underscore", "mapbox-lib"], function (Marionette, _, L) {
     var Marker = Marionette.ItemView.extend({
         model: null,
         marker: null,
-        markerUrl: 'https://api.mapbox.com/v4/marker/',
         modelEvents: {
-            'zoom-to-marker': 'zoomTo'
+            'zoom-to-marker': 'zoomTo',
+            'center-marker': 'centerMarker'
         },
         initialize: function (opts) {
             _.extend(this, opts);
-            var factor = 1.5;
-            if (this.color) {
-                this.model.set("color", this.color);
+            this.markerOpts = this.markerOpts || {};
+            var factor = 1.5,
+                baseIconURL = 'https://api.mapbox.com/v4/marker/';
+            if (this.markerOpts.icon) {
+                this.icon = L.icon(this.markerOpts.icon);
+            } else {
+                if (this.markerOpts.color) {
+                    this.model.set("color", this.markerOpts.color);
+                }
+                this.icon = L.icon({
+                    iconUrl: baseIconURL + "pin-m+" + (this.model.get("color") || "CCC") + ".png?access_token=" + this.token,
+                    iconRetinaUrl: baseIconURL + "pin-m+" + (this.model.get("color") || "CCC") + "@2x.png?access_token=" + this.token,
+                    iconSize: [30 * factor, 70 * factor],
+                    iconAnchor: [15 * factor, 35 * factor]
+                });
             }
-            this.icon = L.icon({
-                iconUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + ".png?access_token=" + this.token,
-                iconRetinaUrl: this.markerUrl + "pin-m+" + (this.model.get("color") || "CCC") + "@2x.png?access_token=" + this.token,
-                iconSize: [30 * factor, 70 * factor],
-                iconAnchor: [15 * factor, 35 * factor]
-            });
             this.highlightIcon = L.icon({
-                iconUrl: this.markerUrl + "pin-m+999.png?access_token=" + this.token,
-                iconRetinaUrl: this.markerUrl + "pin-m+999@2x.png?access_token=" + this.token,
+                iconUrl: baseIconURL + "pin-m+999.png?access_token=" + this.token,
+                iconRetinaUrl: baseIconURL + "pin-m+999@2x.png?access_token=" + this.token,
                 iconSize: [30 * factor, 70 * factor],
                 iconAnchor: [15 * factor, 35 * factor]
             });
@@ -46,14 +52,22 @@ define(["marionette", "underscore", "mapbox-lib"], function (Marionette, _, L) {
 
         markerClick: function (e) {
             var id = e.target.options.id,
-                url = this.markerURL.replace(":id", id);
-            if (this.markerURL) {
+                url = this.markerOpts.clickURL;
+            if (url) {
+                url = url.replace(":id", id);
                 window.location.hash = "#/" + url;
             }
-            //this.marker.setIcon(this.highlightIcon);
         },
 
         zoomTo: function (zoom) {
+            this.map.setView(this.getCoords(), zoom, { animation: true });
+        },
+
+        centerMarker: function () {
+            var zoom = this.map.getZoom();
+            if (zoom < this.markerOpts.zoomLevelDetail) {
+                zoom = this.markerOpts.zoomLevelDetail;
+            }
             this.map.setView(this.getCoords(), zoom, { animation: true });
         }
     });
